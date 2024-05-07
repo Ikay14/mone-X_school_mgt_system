@@ -1,0 +1,8 @@
+# Ignore Docker Compose files
+docker-compose.debug.yml
+docker-compose.yml
+
+# Ignore Docker related files
+.dockerignore
+.env
+node_modules/
