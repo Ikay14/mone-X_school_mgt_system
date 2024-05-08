@@ -1,9 +1,9 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const { type } = require('express/lib/response')
 
-const authSchema = new mongoose({
+
+const authSchema = new mongoose.Schema({
     email: {
         type: String,
         required: [true, 'Please provide your email'],

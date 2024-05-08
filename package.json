@@ -4,7 +4,6 @@
   "description": "This projects is a school management system",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
     "dev": "nodemon app.js"
   },
   "author": "",

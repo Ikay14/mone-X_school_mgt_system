@@ -1,28 +1,29 @@
-const nodemailer = require('nodemailer')
+const nodemailer = require('nodemailer');
 
-var smtpTransport = nodemailer.createTransport(smtpTransport({
-    service: 'Gmail',
-    auth: {
-      user: 'dvnvictory@gmail.com',
-      pass: '###'
-    }
-  }));
+// Configure SMTP Transport with Secure Connection (recommended)
+const transporter = nodemailer.createTransport({
+  service: 'Gmail', // Replace with your preferred email provider
+  auth: {
+    user: 'dvnvictory@gmail.com', // Replace with your actual email address
+    pass: '199100divine'  // Replace with your actual password (store securely)
+  }
+});
 
+// Improved sendWelcomeEmail function with proper error handling
 const sendWelcomeEmail = async (email) => {
-    const mailOptions = {
-        from: '"Your Name" <dvnvictory@gmail.com>',
-        to: email,
-        subject: 'Welcome to Our App',
-        html: '<p>Thank you for signing up! <br> proceed to register with your details</p>'
-    };
+  const mailOptions = {
+    from: '"Mone-X" <dvnvictory@gmail.com>', // Use display name and email address
+    to: email,
+    subject: 'Welcome to Our School',
+    html: '<p>Thank you for signing up! <br> Proceed to register with your details</p>'
+  };
 
-    smtpTransport.sendMail(mailOptions, function(error, info) {
-        if (error) {
-            console.error('Error sending email:', error);
-        } else {
-            console.log('Welcome email sent to:', email);
-        }
-    });
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Welcome email sent to:', email);
+  } catch (error) {
+    console.error('Error sending email:', error);
+  }
 };
 
 module.exports = sendWelcomeEmail;
