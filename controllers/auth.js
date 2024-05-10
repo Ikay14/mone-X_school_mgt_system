@@ -1,5 +1,5 @@
 const express = require('express')
-const auth = require('../models/auth')
+const user = require('../models/auth')
 const { StatusCodes } = require('http-status-codes')
 
 const UnauthenticatedError = require('../errors/unauthenticated')
@@ -9,9 +9,8 @@ const sendWelcomeEmail = require('../utils/signUpMsg')
 
 const register = async (req, res) => {
    try {
-    const { email, password } = req.body
-    const User = await auth.create({ email, password})
-    const token = createJWT()
+    const User = await user.create({ ...req.body })
+    const token = User.createJWT()
     res.status(StatusCodes.CREATED).json({ User: {name: User.name, id: User._id }, token})
 
     // send welcome email
@@ -34,18 +33,18 @@ const login = async (req, res) => {
         throw new badRequestError('please provide email and password!')
     }
     // check email in DB
-    const User = await auth.findOne({ email })
+    const User = await user.findOne({ email })
     if (!User) {
         throw new UnauthenticatedError('Please Provide valid email address')
     }
     // check for Password
-    const isMatch = await auth.comparePassword(password)
+    const isMatch = await User.comparePassword(password)
     if (!isMatch) {
         throw new UnauthenticatedError('Invalid credentials')
     }
     // authorize user
-    const token = auth.createJWT()
-    res.status(StatusCodes.OK).json({User: {name: User.name}, token})
+    const token = User.createJWT()
+    res.status(StatusCodes.OK).json({User: {name: User.id + ` your're welcome back` }, token})
    } catch (error) {
         console.log(error);
    }

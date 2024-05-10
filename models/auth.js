@@ -25,18 +25,18 @@ authSchema.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, salt)
 })
 
-authSchema.methods.CreateJWT = async function () {
+
+authSchema.methods.createJWT = function () {
     return jwt.sign(
-        {
-            userId: this._id, name: this.name
-        },
+           { userId: this._id, name: this.name },
         process.env.JWT_SECRET, 
         {
-            expiresIn: JWT_LIFETIME
+            expiresIn: process.env.JWT_LIFETIME
         }
 
     )
 }
+
 
 authSchema.methods.comparePassword = async function (enteredPassword) {
     const isPasswordMatch = await bcrypt.compare(enteredPassword, this.password)

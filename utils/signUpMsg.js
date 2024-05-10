@@ -1,18 +1,19 @@
-const nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer')
+require('dotenv').config()
 
-// Configure SMTP Transport with Secure Connection (recommended)
+
 const transporter = nodemailer.createTransport({
-  service: 'Gmail', // Replace with your preferred email provider
+  service: 'Gmail', 
   auth: {
-    user: 'dvnvictory@gmail.com', // Replace with your actual email address
-    pass: '199100divine'  // Replace with your actual password (store securely)
+    user: process.env.EMAIL_USERNAME, 
+    pass: process.env.EMAIL_PASSWORD  
   }
 });
 
 // Improved sendWelcomeEmail function with proper error handling
 const sendWelcomeEmail = async (email) => {
   const mailOptions = {
-    from: '"Mone-X" <dvnvictory@gmail.com>', // Use display name and email address
+    from: 'Mone-X <dvnvictory@gmail.com>', 
     to: email,
     subject: 'Welcome to Our School',
     html: '<p>Thank you for signing up! <br> Proceed to register with your details</p>'

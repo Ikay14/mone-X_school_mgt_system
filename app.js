@@ -1,4 +1,3 @@
-
 const express = require('express')
 const app = express()
 // configuration of the .env file 
@@ -15,10 +14,6 @@ const authMiddleware = require('./middlewares/auth')
 const notFound = require('./middlewares/notFound')
 const errorHandlerMiddleware = require('./middlewares/error-handler')
 
-// using the middlewares
-
-app.use(errorHandlerMiddleware)
-app.use(notFound)
 
 // importing routes
 const authRoute = require('./routes/authRoute')
@@ -27,6 +22,11 @@ const studentRoute = require('./routes/studentRoute')
 //  routes
 app.use('/api/v1/auth', authRoute)
 app.use('/api/v1/student', studentRoute)
+
+
+// using the middlewares
+app.use(errorHandlerMiddleware)
+app.use(notFound)
 
 const Port = process.env.PORT || 5000
 
