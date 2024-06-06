@@ -18,7 +18,13 @@ const authSchema = new mongoose.Schema({
         required: true,
         minLength: 6,
         maxLength: 15
-    }
+    },
+    role: {
+        type: String,
+        enum: ['student', 'admin', 'teacher'],
+        default: 'student'
+    } ,
+    timestamps:{}
 })
 authSchema.pre('save', async function (next) {
     const salt = await bcrypt.genSalt(10)
@@ -36,7 +42,6 @@ authSchema.methods.createJWT = function () {
 
     )
 }
-
 
 authSchema.methods.comparePassword = async function (enteredPassword) {
     const isPasswordMatch = await bcrypt.compare(enteredPassword, this.password)
