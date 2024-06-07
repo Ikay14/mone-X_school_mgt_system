@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+
 // configuration of the .env file 
 require('dotenv').config()
 
@@ -9,8 +10,7 @@ const connectDB = require('./db/connect')
 // json middleware
 app.use(express.json())
 
-// importing of middlewares
-const authMiddleware = require('./middlewares/auth') 
+// importing of middlewares 
 const notFound = require('./middlewares/General/notFound')
 const errorHandlerMiddleware = require('./middlewares/General/error-handler')
 
@@ -22,11 +22,13 @@ const authRoute = require('./routes/authRoute')
 // importing admin routes
 const adminRoute = require('./routes/Staff/admin.route')
 
-//  routes
-app.use('/api/v1/auth', authRoute)
-// app.use('/api/v1/student',authMiddleware, studentRoute)
-app.use('/api/v1/auth', adminRoute) 
+// importing Teachers routes
+const teacherRoute = require('./routes/Staff/teacher.route')
 
+//  routes
+app.use('/api/v1/admin', adminRoute) 
+app.use('/api/v1/teacher', teacherRoute)
+// // app.use('/api/v1/student',authMiddleware, studentRoute)
 
 
 // using the middlewares

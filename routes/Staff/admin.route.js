@@ -3,7 +3,7 @@ const adminRoute = express.Router()
 
 // import middlewares 
 const isAdmin = require('../../middlewares/Staff/isAdmin')
-const auth = require('../../middlewares/auth')
+const isLoggedIn = require('../../middlewares/isloggedIn')
 
 const {
     registerAdmin,
@@ -13,10 +13,10 @@ const {
     updateAdmin
 } = require('../../controllers/Staff/admin.controller')
 
-adminRoute.post('/admin/register', registerAdmin)
-adminRoute.post('/admin/login', loginAdmin)
-adminRoute.get('/admin/profile',auth, isAdmin, getAdmin)
-adminRoute.get('/admin/viewAdmins', auth, isAdmin, getAllAdmin)
-adminRoute.post('/admin/updateProfile', auth, isAdmin, updateAdmin)
+adminRoute.post('/register', registerAdmin)
+adminRoute.post('/login', loginAdmin)
+adminRoute.get('/profile',isLoggedIn, isAdmin, getAdmin)
+adminRoute.get('/view-admins', isLoggedIn, isAdmin, getAllAdmin)
+adminRoute.post('/update-profile', isLoggedIn, isAdmin, updateAdmin)
 
 module.exports = adminRoute

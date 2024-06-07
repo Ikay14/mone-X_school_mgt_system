@@ -2,11 +2,10 @@ const express = require('express');
 
 // Import models 
 const Admin = require('../../models/Staff/admin.model');
-const Authorizer = require('../../models/auth');
 
 // Import error handlers 
 const {  notFound, badRequest } = require('../../errors');
-const { StatusCodes, INTERNAL_SERVER_ERROR } = require('http-status-codes');
+
 
 // Import validator
 const { adminSchema } = require('../../middlewares/Staff/staff.validator');
@@ -68,7 +67,7 @@ const loginAdmin = async (req, res) => {
             throw new badRequest('entered email and password incorrect, try again')
         }
 
-        const Token = user.createJWT(user._id)
+        const Token = user.createJWT()
         const result = {
             user: {
                 _id  : user._id,
@@ -90,11 +89,16 @@ const getAdmin = async (req, res) => {
     const id = req.user.userId
     console.log(id);
     const admin = await Admin.findOne({ _id: id })
+    .select('-password -createdAt -updatedAt')
+    .populate('teachers')
+    // .populate('students');
     if(!admin){
         throw new notFound('user does not exist')
-    }else {
-        res.status(200).json({ message: 'success', admin})
     }
+    console.log('Populated Admin Object:', admin);
+
+    res.status(200).json({ message: 'success', admin})
+    
     } catch (error) {
         res.status(500).json({ msg: 'INTERNAL_SERVER_ERROR' });
         console.log(error);

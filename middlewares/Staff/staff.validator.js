@@ -17,7 +17,7 @@ const teacherSchema = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().min(6).max(30).required(),
     dateEmployed: Joi.date().default(Date.now),
-    teacherId: Joi.string().required(),
+    teacherId: Joi.string(),
     isWithdrawn: Joi.boolean().default(false),
     isSuspended: Joi.boolean().default(false),
     role: Joi.string().default('teacher'),
