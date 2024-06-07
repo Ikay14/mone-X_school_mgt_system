@@ -132,10 +132,47 @@ const getAllTeacher = async (req, res) => {
     }
 }
 
+const updateTeacher = async (req, res) => {
+    let id = req.user.userId;
+    try {
+        const { name, email, password } = req.body;
+        
+        // Check if email exists already
+        const emailExist = await Teacher.findOne({ email });
+        if (emailExist) {
+            return res.status(401).json({ msg: 'Email is already in use' });
+        }
+
+        if (password) {
+            // Update password
+            const newPassword = await Teacher.findByIdAndUpdate(
+                id,
+                { name, email, password },
+                { runValidators: true, new: true }
+            ).select("-password -createdAt -updatedAt");
+
+            return res.status(200).json({ msg: 'success', newPassword });
+        } else {
+            // If no password was provided, update name and email
+            const updateTeacherInfo = await Teacher.findByIdAndUpdate(
+                id,
+                { name, email },
+                { runValidators: true, new: true }
+            ).select("-password -createdAt -updatedAt");
+
+            return res.status(201).json({ msg: 'success', updateTeacherInfo });
+        }
+    } catch (error) {
+        res.status(500).json({ msg: 'INTERNAL_SERVER_ERROR' });
+        console.log(error);
+    }
+}
+
 module.exports =
  {
     createTeacher,
     loginTeacher,
     getTeacher,
-    getAllTeacher
+    getAllTeacher,
+    updateTeacher
 }
