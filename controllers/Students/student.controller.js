@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcrypt')
 
 // Importing models
 const Admin = require('../../models/Staff/admin.model');
@@ -263,47 +264,43 @@ const adminUpdateStudentInfo = async (req, res) => {
 
 const studentUpdateStudentProfile = async (req, res) => {
     try {
-        // destructure student id
-        const { studentId } = req.params;
+        // Destructure student id
+        const studentId = req.user.userId;
         
+        // Destructure name, email, and password from request body
         const { name, email, password } = req.body;
 
-        // check if email exists
+        // Check if email exists
         const emailExist = await Student.findOne({ email });
-        if(emailExist && emailExist._id !== studentId){
-            return res.status(404).json({ msg: 'Email is already in use'});
+        if (emailExist && emailExist._id.toString() !== studentId) {
+            return res.status(400).json({ msg: 'Email is already in use' });
         }
-    // check if password is provided 
-        if(password){
-            const newPassword = await Student.findOneAndUpdate(
-                studentId,
-                {
-                    password
-                },
-                { runValidators: true, new: true}
-            ).select("-password -createdAt -updatedAt")
-            return res.status(200).json({ msg: 'Password updated successfully', student: newPassword });
 
+        // Check if password is provided 
+        if (password) {
+            // Update password
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            const newPassword = await Student.findByIdAndUpdate(
+                studentId,
+                { password: hashedPassword },
+                { runValidators: true, new: true }
+            ).select("-createdAt -updatedAt");
+            return res.status(200).json({ msg: 'Password updated successfully', student: newPassword });
         } else {
-            // if password is not provided update name or email
+            // If password is not provided, update name or email
             const updatedStudentInfo = await Student.findByIdAndUpdate(
                 studentId,
-                { 
-                    name, 
-                    email 
-                },
-                { runValidators: true, new: true}
-            ).select("-password -createdAt -updatedAt")
-            return res.status(200).json({ msg : 'Profile updated successfully', student: updatedStudentInfo});
-            console.log(updatedStudentInfo);
-        };
+                { name, email },
+                { runValidators: true, new: true }
+            ).select("-password -createdAt -updatedAt");
+            return res.status(200).json({ msg : 'Profile updated successfully', student: updatedStudentInfo });
+        }
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ msg: 'INTERNAL_SERVER_ERROR'})
+        console.error(error);
+        return res.status(500).json({ msg: 'INTERNAL_SERVER_ERROR' });
     }
 }
-
-
 module.exports = {
     regStudent,
     loginStudent,
