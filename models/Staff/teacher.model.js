@@ -102,7 +102,7 @@ teacherSchema.methods.createJWT = function () {
       expiresIn: process.env.JWT_LIFETIME,
     }
   );
-}
+};
 
 // Generate unique teacher ID
 teacherSchema.pre('save', function (next) {

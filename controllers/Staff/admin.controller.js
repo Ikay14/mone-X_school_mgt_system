@@ -54,23 +54,26 @@ const loginAdmin = async (req, res) => {
 
         // check for entered details
         if(!email || !password ){
-            throw new badRequest('please enter email and password')
+          return  res.status(400).json({ msg: 'Please enter email and password' });
+
         }
         // check for email
         const user = await Admin.findOne({ email }) 
         if(!user){
-            throw new badRequest('entered email and password incorrect, try again')
+           return res.status(400).json({ msg: 'Entered email and password incorrect, try again' });
+
         }
         // check for password
         const isPassValid = await user.comparePassword(password)
         if(!isPassValid){
-            throw new badRequest('entered email and password incorrect, try again')
+            return res.status(400).json({ msg: 'Entered email and password incorrect, try again' });
+
         }
 
         const Token = user.createJWT()
         const result = {
             user: {
-                _id  : user._id,
+                adminId  : user._id,
                 name : user.name,
                 email: user.email,
                 role : user.role
@@ -146,8 +149,11 @@ const updateAdmin = async (req, res) => {
             return res.status(201).json({ msg: 'success', updateAdminInfo });
         }
     } catch (error) {
-        res.status(500).json({ msg: 'INTERNAL_SERVER_ERROR' });
-        console.log(error);
+        if (error instanceof customError) { 
+            res.status(error.statusCode).json({ msg: error.message, errors: error.errors });
+        } else {
+            res.status(500).json({ msg: 'INTERNAL_SERVER_ERROR' });  
+        }
     }
 }
 

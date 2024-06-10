@@ -73,13 +73,13 @@ const loginTeacher = async (req, res) => {
         // check email is valid 
         const user = await Teacher.findOne({ email });
         if(!user){
-            throw new notFound('Please provided email and password')
+            return res.status(404).json('Please provided valid email and password')
         };
 
         // check for password;
         const isPassValid = await user.comparePassword(password);
         if(!isPassValid){
-            throw new notFound('Please provided email and password')
+            return res.status(404).json('Please provided valid email and password')
         };
 
         // create Token for the user 
@@ -87,7 +87,7 @@ const loginTeacher = async (req, res) => {
         const result = {
             Teacher :
             {
-                userId: user._id,
+                teacherId: user._id,
                 email: user.email,
                 role: user.role,
                 teacherId: user.teacherId
@@ -139,7 +139,7 @@ const updateTeacher = async (req, res) => {
         
         // Check if email exists already
         const emailExist = await Teacher.findOne({ email });
-        if (emailExist) {
+        if (emailExist && emailExist.Teacher._id !== id) {
             return res.status(401).json({ msg: 'Email is already in use' });
         }
 
@@ -147,7 +147,7 @@ const updateTeacher = async (req, res) => {
             // Update password
             const newPassword = await Teacher.findByIdAndUpdate(
                 id,
-                { name, email, password },
+                { password },
                 { runValidators: true, new: true }
             ).select("-password -createdAt -updatedAt");
 

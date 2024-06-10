@@ -16,8 +16,7 @@ const errorHandlerMiddleware = require('./middlewares/General/error-handler')
 
 
 // importing student routes
-const authRoute = require('./routes/authRoute')
-// const studentRoute = require('./routes/Student')
+const studentRoute = require('./routes/Student/student.route')
 
 // importing admin routes
 const adminRoute = require('./routes/Staff/admin.route')
@@ -28,7 +27,7 @@ const teacherRoute = require('./routes/Staff/teacher.route')
 //  routes
 app.use('/api/v1/admin', adminRoute) 
 app.use('/api/v1/teacher', teacherRoute)
-// // app.use('/api/v1/student',authMiddleware, studentRoute)
+app.use('/api/v1/student', studentRoute)
 
 
 // using the middlewares

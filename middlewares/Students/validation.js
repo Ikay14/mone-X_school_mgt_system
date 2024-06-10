@@ -1,28 +1,27 @@
 const express = require('express')
 const Joi = require('joi')
 
-const birthdaySchema = Joi.object({
-    day: Joi.number().integer().min(1).max(31).required(),
-    month: Joi.number().integer().min(1).max(12).required(),
-    year: Joi.number().integer().min(1900).max(9999).required()
-})
+const studentSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().required().email(), 
+  password: Joi.string().required(),
+  Department: Joi.string().required(),
+  matricNumber: Joi.string(),
+  role: Joi.string().default('student'),
+  dateAdmitted: Joi.date().default(Date.now),
+  examResults: Joi.array().items(Joi.string()), 
+  isGraduated: Joi.boolean().default(false),
+  isWithdrawn: Joi.boolean().default(false),
+  isSuspended: Joi.boolean().default(false),
+  createdBy: Joi.string().required(),
+  yearGraduated: Joi.string().allow(null, ''), 
+});
 
-const userSchema = Joi.object({
-    first_name: Joi.string().required(),
-    last_name: Joi.string().required(),
-    middle_name: Joi.string(),
-    contact_information: Joi.string().required(),
-    gender: Joi.string().valid('Male', 'Female', 'other').required(),
-    Department: Joi.string().required(),
-    address: Joi.string().required(),
-    dateOfBirth: birthdaySchema.required(),
-    PlaceOfOrigin: Joi.string().required()
-}).options({ abortEarly: false })
 
 const courseSchema = Joi.object({
     courseCode: Joi.string()
     .required()
-    .trim()
+    .trim() 
     .uppercase(),
   title: Joi.string()
     .required()
@@ -52,6 +51,6 @@ const courseSchema = Joi.object({
 
 module.exports = 
 {
-    userSchema,
+    studentSchema,
     courseSchema
 }
