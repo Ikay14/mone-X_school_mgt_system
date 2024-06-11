@@ -4,12 +4,18 @@ const bcrypt = require('bcrypt')
 // Importing models
 const Admin = require('../../models/Staff/admin.model');
 const Student = require('../../models/Students/student.model');
+const Result = require('../../models/Academics/result.model');
+const Exam = require('../../models/Academics/exam.model');
+
 
 // Importing Joi schema for validation
 const { studentSchema } = require('../../middlewares/Students/validation');
 
 // Importing custom error classes
 const { customError, badRequest, unauthenticated, notFound } = require('../../errors');
+
+// import result calculator
+const calculateResult = require('../../utils/result.calculate')
 
 const regStudent = async (req, res) => {
     const adminId = req.user.userId;
@@ -301,6 +307,67 @@ const studentUpdateStudentProfile = async (req, res) => {
         return res.status(500).json({ msg: 'INTERNAL_SERVER_ERROR' });
     }
 }
+
+
+const studentWriteExam = async (req, res) => {
+    try {
+
+        const { answers, examId, studentId } = req.body; 
+
+        // check if exam exists
+        const isExamExist = await Exam.findById(examId);
+        if(!isExamExist){
+            return res.status(404).json({ msg: 'Exam Not Found'})
+        }
+
+        // check if student exist
+        const isStudentExist = await Student.findById(studentId)
+        if(isStudentExist){
+            return res.status(404).json({ msg: 'Student Not found'})
+        }
+
+        // check if student is Suspended or withdrawn
+        if( Student.isSuspended || Student.isWithdrawn ){
+            return res.status(404).json({ msg: 'Oops! you are not eligible for this exam'})
+        }
+
+        // check if Student have written exam already
+        const examTaken = await Result.findOne({ student: studentId})
+        if(examTaken){
+            return res.status(400).json({ msg: 'Exam Taken, please proceed to other courses'})
+        }
+        // get Exam question
+        const examQuestion = await isExamExist?.question
+        if(!examQuestion.length === answers.length){
+            return res.status(400).json({ msg: 'You have not answered all the questions'})
+        } 
+
+        const result = await calculateResult(examQuestion, answers, isExamExist);
+        // creating results
+        const publishResult = await Result.create({
+          studentId: Student._id,
+          teacher: isExamExist.createdBy,
+          exam: isExamExist._id,
+          score: result.score,
+          grade: result.grade,
+          passMark: isExamExist.passMark,
+          status: result.status,
+          remarks: result.remarks,
+          answeredQuestions: result.answeredQuestions,
+          level: isExamExist.level,
+          semester: isExamExist.semester,
+          academicYear: isExamExist.academicYear,
+        });
+
+        Student.examResults.push(publishResult._id);
+        await Student.save();
+        return responseStatus(res, 200, "success", "Answer Submitted");
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: 'INTERNAL_SERVER_ERROR'})
+    }
+}
+
 module.exports = {
     regStudent,
     loginStudent,
@@ -308,5 +375,7 @@ module.exports = {
     getAllStudentByAdmin,
     getStudentByAdmin,
     adminUpdateStudentInfo,
-    studentUpdateStudentProfile
+    studentUpdateStudentProfile,
+    studentWriteExam
+
 };

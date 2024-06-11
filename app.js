@@ -27,7 +27,7 @@ const teacherRoute = require('./routes/Staff/teacher.route')
 //  routes
 app.use('/api/v1/admin', adminRoute) 
 app.use('/api/v1/teacher', teacherRoute)
-app.use('/api/v1/student', studentRoute)
+app.use('/api/v1/student', studentRoute)    
 
 
 // using the middlewares

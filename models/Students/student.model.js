@@ -37,9 +37,9 @@ const studentSchema = new mongoose.Schema(
         ref: "ExamResult",
       },
     ],
-    Department: {
-      type: String,
-      required: true,
+    department: {
+      type: ObjectId,
+      ref: 'Department',
     },
     isGraduated: {
       type: Boolean,

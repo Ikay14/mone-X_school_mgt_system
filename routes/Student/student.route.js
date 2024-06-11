@@ -9,7 +9,8 @@ const
     getStudentByAdmin,
     adminUpdateStudentInfo,
     getAllStudentByAdmin,
-    studentUpdateStudentProfile
+    studentUpdateStudentProfile,
+    studentWriteExam
 } = require('../../controllers/Students/student.controller')
 
 // importing middleware
@@ -24,6 +25,7 @@ studentRoute.get('/admin/view-students', isLoggedIn, isAdmin, getAllStudentByAdm
 studentRoute.get('/:studentId/admin', isLoggedIn, isAdmin, getStudentByAdmin)
 studentRoute.patch('/:studentId/update-student/admin', isLoggedIn, isAdmin, adminUpdateStudentInfo)
 studentRoute.patch('/update-profile', isLoggedIn, isStudent, studentUpdateStudentProfile)
+studentRoute.patch('/write-exam', isLoggedIn, isStudent, studentWriteExam)
 
 
 

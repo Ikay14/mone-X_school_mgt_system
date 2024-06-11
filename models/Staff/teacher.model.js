@@ -40,18 +40,31 @@ const teacherSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      default: "teacher",
+      default: "Teacher",
     },
-    subject: {
+    course:[ 
+      {
       type: ObjectId,
-      ref: "Subject",
+      ref: "Course",
+    }
+  ],
+    course:[ 
+      {
+      type: ObjectId,
+      ref: "Course",
+    }
+  ],
+    level: 
+      {
+      type: ObjectId,
+      ref: "Level",
     },
     applicationStatus: {
       type: String,
       enum: ["pending", "approved", "rejected"], 
       default: "pending",
     }, 
-    program: {
+    department: {
       type: String,
     },
     examsCreated: [
