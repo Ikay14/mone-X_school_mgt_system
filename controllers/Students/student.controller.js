@@ -353,6 +353,7 @@ const studentWriteExam = async (req, res) => {
           passMark: isExamExist.passMark,
           status: result.status,
           remarks: result.remarks,
+          course: isExamExist.course,
           answeredQuestions: result.answeredQuestions,
           level: isExamExist.level,
           semester: isExamExist.semester,
@@ -361,7 +362,7 @@ const studentWriteExam = async (req, res) => {
 
         Student.examResults.push(publishResult._id);
         await Student.save();
-        return responseStatus(res, 200, "success", "Answer Submitted");
+        return res.status(200).json({ msg:  "Answer Submitted" });
     } catch (error) {
         console.log(error);
         res.status(500).json({ msg: 'INTERNAL_SERVER_ERROR'})

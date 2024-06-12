@@ -55,9 +55,9 @@ const examResultSchema = new mongoose.Schema(
       ref: 'Teacher',
       required: true,
     },
-    subject: {
+    course: {
       type: ObjectId,
-      ref: "Subject",
+      ref: "Course",
     },
     level: {
       type: ObjectId,
