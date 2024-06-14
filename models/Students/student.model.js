@@ -31,6 +31,10 @@ const studentSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    academicYear: {
+      type: ObjectId,
+      ref: "AcademicYear",
+    },
     examResults: [
       {
         type: ObjectId,

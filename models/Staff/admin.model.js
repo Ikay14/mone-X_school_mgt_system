@@ -30,6 +30,12 @@ const adminSchema = new mongoose.Schema(
         ref: "Teacher",
       },
     ],
+    students: [
+      {
+        type: ObjectId,
+        ref: 'Student',
+      },
+    ],
     department: [
       {
         type: ObjectId,
@@ -46,6 +52,12 @@ const adminSchema = new mongoose.Schema(
       {
         type: ObjectId,
         ref: "course",
+      },
+    ],
+    academicYear: [
+      {
+        type: ObjectId,
+        ref: 'AcademicYear',
       },
     ],
     semester: [
