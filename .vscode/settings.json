@@ -3,5 +3,8 @@
         "islogged",
         "matric",
         "Mone"
+    ],
+    "cSpell.ignoreWords": [
+        "academicyear"
     ]
 }

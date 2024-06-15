@@ -15,19 +15,23 @@ const notFound = require('./middlewares/General/notFound')
 const errorHandlerMiddleware = require('./middlewares/General/error-handler')
 
 
-// importing student routes
+// importing student route
 const studentRoute = require('./routes/Student/student.route')
 
-// importing admin routes
+// importing admin route
 const adminRoute = require('./routes/Staff/admin.route')
 
-// importing Teachers routes
+// importing Teachers route
 const teacherRoute = require('./routes/Staff/teacher.route')
+
+// importing Academic-year route
+const academicRoute = require('./routes/Academic/academicYear.route')
 
 //  routes
 app.use('/api/v1/admin', adminRoute) 
 app.use('/api/v1/teacher', teacherRoute)
-app.use('/api/v1/student', studentRoute)    
+app.use('/api/v1/student', studentRoute)
+app.use('/api/v1/academic', academicRoute)    
 
 
 // using the middlewares

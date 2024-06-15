@@ -37,8 +37,9 @@ const createAcademicYear = async (req, res) => {
         // save new academic year
         await newAcademicYear.save();
 
-        // attribute the created academic year to the admin that created it 
-        isAdmin.academicYear.push(newAcademicYear._id);
+        // attribute the created academic year to the admin that created it
+        const admin = await Admin.findById(isAdmin); 
+        admin.academicYear.push(newAcademicYear._id);
         await isAdmin.save();
 
         // display success 
@@ -49,8 +50,49 @@ const createAcademicYear = async (req, res) => {
     }
 };
 
+const getAcademicYear = async (req, res)=>{
+    try {
+        const academic = await AcademicYear.find({});
+        
+        // Check if there are any academic years found
+        if (academicYears.length === 0) {
+            return res.status(404).json({ msg: 'No academic years found' });
+        }
+
+        return res.status(200).json({ msg: 'success', academic});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: 'INTERNAL_SERVER_ERROR' })
+    }
+};
+
+const updateAcademicYear = async (req ,res) => {
+    let academicId = req.user.userId;
+    try {
+        const { name, fromYear, toYear} = req.body;
+
+        // check if year exist already
+        const acadName = await AcademicYear.findOne({ name });
+        if(acadName){
+            return res.status(400).json({ msg: `Oops ${acadName} exist already!`})
+        }
+
+        // update academictYearInfo
+        const newDetails =  await AcademicYear.findByIdAndUpdate(
+            academicId,
+            {name, fromYear, toYear},
+            {runValidators:true, new: true}
+        )
+        return res.status(200).json({ msg: 'success', newDetails})
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: 'INTERNAL_SERVER_ERROR' });
+    }
+};
 
 module.exports = 
 {
     createAcademicYear,
+    getAcademicYear,
+    updateAcademicYear
 };
