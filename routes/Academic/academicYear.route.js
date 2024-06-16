@@ -6,15 +6,17 @@ const academicRoute = express.Router();
 const {
     createAcademicYear,
     getAcademicYear,
-    updateAcademicYear
-} = require('../../controllers/Academic/academic.controller')
+    updateAcademicYear,
+    DeleteAcademicYear
+} = require('../../controllers/Academic/academic.controller');
 
 // import middlewares
-const isLoggedIn = require('../../middlewares/isloggedIn')
-const isAdmin = require('../../middlewares/Staff/isAdmin')
+const isLoggedIn = require('../../middlewares/isloggedIn');
+const isAdmin = require('../../middlewares/Staff/isAdmin');
 
-academicRoute.post('/create-academicyear', isLoggedIn, isAdmin, createAcademicYear)
-academicRoute.get('/academicyear', getAcademicYear)
-academicRoute.patch('/update-academicyear', isLoggedIn, isAdmin, updateAcademicYear)
+academicRoute.post('/create-academicyear', isLoggedIn, isAdmin, createAcademicYear);
+academicRoute.get('/academicyear', getAcademicYear);
+academicRoute.patch('/update-academicyear/:id', isLoggedIn, isAdmin, updateAcademicYear);
+academicRoute.delete('/delete-academicyear/:id', isLoggedIn, isAdmin, DeleteAcademicYear); 
 
-module.exports = academicRoute
+module.exports = academicRoute;

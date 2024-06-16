@@ -40,10 +40,14 @@ const createAcademicYear = async (req, res) => {
         // attribute the created academic year to the admin that created it
         const admin = await Admin.findById(isAdmin); 
         admin.academicYear.push(newAcademicYear._id);
-        await isAdmin.save();
+        await admin.save();
 
         // display success 
-        res.status(200).json({ msg: `success!, ${newAcademicYear} Academic Year created`});
+        res.status(200).json({ 
+            msg: 'success!', 
+            newAcademicYear,
+            academicYear: `${name} Academic Year created`
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({ msg: 'INTERNAL_SERVER_ERROR' })
@@ -55,11 +59,14 @@ const getAcademicYear = async (req, res)=>{
         const academic = await AcademicYear.find({});
         
         // Check if there are any academic years found
-        if (academicYears.length === 0) {
+        if (academic.length === 0) {
             return res.status(404).json({ msg: 'No academic years found' });
         }
 
-        return res.status(200).json({ msg: 'success', academic});
+        return res.status(200).json({ 
+            msg: 'success',
+            nbHits: academic.length,
+            academic});
     } catch (error) {
         console.log(error);
         res.status(500).json({ msg: 'INTERNAL_SERVER_ERROR' })
@@ -67,32 +74,72 @@ const getAcademicYear = async (req, res)=>{
 };
 
 const updateAcademicYear = async (req ,res) => {
-    let academicId = req.user.userId;
+    const academicId  = req.params.id;
+    let adminID = req.user.userId;
+    console.log(academicId);
     try {
         const { name, fromYear, toYear} = req.body;
 
+        // check if Admin is authorized to make request
+        const admin = await Admin.findById(adminID);
+        if(!admin){
+            return res.status(404).json({ msg: 'Unauthorized access, Admin Not Found'})
+        }
         // check if year exist already
         const acadName = await AcademicYear.findOne({ name });
         if(acadName){
-            return res.status(400).json({ msg: `Oops ${acadName} exist already!`})
+            return res.status(400).json({ msg: `Oops ${acadName} exist already!`});
         }
 
-        // update academictYearInfo
+        // update academicYearInfo
         const newDetails =  await AcademicYear.findByIdAndUpdate(
             academicId,
             {name, fromYear, toYear},
             {runValidators:true, new: true}
-        )
-        return res.status(200).json({ msg: 'success', newDetails})
+        ).select("-createdAt -updatedAt");
+
+        return res.status(200).json({ 
+            msg: 'success', 
+            academicYear: newDetails
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({ msg: 'INTERNAL_SERVER_ERROR' });
     }
 };
 
+const DeleteAcademicYear = async (req,res) => {
+    try {
+        let academicId = req.params.id;
+        let adminID = req.user.userId;
+
+       // check if Admin is authorized to make request
+       const admin = await Admin.findById(adminID);
+       if(!admin){
+           return res.status(404).json({ msg: 'Unauthorized access, Admin Not Found'});
+       }
+
+    //    delete Academic Year if found else return Not found
+       const del = await AcademicYear.findByIdAndDelete(academicId);
+       if(del){
+        return res.status(400).json({
+            msg: 'Academic Year deleted successfully!'
+        })
+       } else {
+        return res.status(404).json({
+            msg: 'Oops academic Year Not found'
+        })
+       }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ msg: 'INTERNAL_SERVER_ERROR' });
+    }
+}
+
 module.exports = 
 {
     createAcademicYear,
     getAcademicYear,
-    updateAcademicYear
+    updateAcademicYear,
+    DeleteAcademicYear
 };

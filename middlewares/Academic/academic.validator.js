@@ -2,8 +2,8 @@ const Joi = require('joi');
 
 const validateAcademicYear = Joi.object({
     name: Joi.string().required(),
-    fromYear: Joi.date().required(),
-    toYear: Joi.date().required(),
+    fromYear: Joi.string().regex(/^\d{4}$/).required(),
+    toYear: Joi.string().regex(/^\d{4}$/).required(),
     isCurrent: Joi.boolean().default(false),
     createdBy: Joi.string().regex(/^[0-9a-fA-F]{24}$/).required(), // Validate ObjectId as a string
     students: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)),
