@@ -27,11 +27,15 @@ const teacherRoute = require('./routes/Staff/teacher.route')
 // importing Academic-year route
 const academicRoute = require('./routes/Academic/academicYear.route')
 
+// importing Course route
+const courseRoute = require('./routes/Academic/course.route')
+
 //  routes
 app.use('/api/v1/admin', adminRoute) 
 app.use('/api/v1/teacher', teacherRoute)
 app.use('/api/v1/student', studentRoute)
 app.use('/api/v1/academic', academicRoute)    
+app.use('/api/v1/course', courseRoute)    
 
 
 // using the middlewares
