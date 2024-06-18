@@ -52,5 +52,6 @@ const departmentSchema = new mongoose.Schema(
     }
 );
 
+
 // model
 module.exports = mongoose.model('Department', departmentSchema)
